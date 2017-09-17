@@ -1,0 +1,157 @@
+extends layout
+
+block content
+
+  
+  link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css')
+
+  style(type='text/css').
+  
+  style.
+    body {
+    background-color: #282828;
+        }
+    h1 {
+    font-size: 45px;
+    }
+  div(class="title-container")
+    h1 Twitch Tours
+  div.
+  div(class="search-container")
+        input(id="vodid" type="text" class="search-box" name="id" placeholder="VOD ID")
+  div.
+  
+  div(class="search-container")
+      input(id="phrase" type="text" class="search-box" name="phrase" placeholder="Phrase")
+  div.
+  
+  div(class="search-container")
+      input(id="frequency" type="text" class="search-box" name="frequency" placeholder="Frequency")
+  div.
+  
+  //- div(class="search-container")
+  //-     input(id="sample" type="text" class="search-box" name="sample" placeholder="Sample Size")
+  //- div.
+  
+  div(class="button-container")
+      button(class="search-button" id="searchButton")
+        | Search
+  div.
+
+  div(class="button-container")
+      button(class="search-button" id="cancelButton")
+        | Cancel
+  div.
+
+  div(id="loadingDiv")
+    div(id="cssload-wrapper")
+      div(id="cssload-border")
+        div(id="cssload-whitespace")
+          div(id="cssload-line")
+          div.
+        div.
+      div.
+    div.
+  div.
+
+  div(id="error-message")
+  div.
+  div(id="return-title")
+    | Highlight times:
+  div.
+  div(id="return-container")
+  div.
+  script(src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+
+  script.
+    $(document).ready(function(){
+
+    $('#error-message').hide();
+    $("#cancelButton").hide();
+    $("#return-title").hide();
+
+    var $loading = $('#loadingDiv').hide();
+    $(document)
+      .ajaxStart(function () {
+        $loading.show();
+      })
+      .ajaxStop(function () {
+        $loading.hide();
+      });
+
+    var post;
+
+    $("#cancelButton").on("click", function() {
+       post.abort();
+       $("#cancelButton").hide();
+       $("#searchButton").show();
+
+    });
+
+    $("#searchButton").on("click", 	function() {
+
+    $("#return-title").hide();
+    $('#error-message').hide();
+    $('.returnData').remove();
+    var freq = $('#frequency').val();
+    freq = parseInt(freq);
+    if (freq < 1 || freq > 100 || isNaN(freq)){
+    	$("#error-message").text("Improper frequency. Make sure frequency is a number between 1-100.");
+    	$("#error-message").show();
+    	}
+    else {
+
+    $("#searchButton").hide();
+    $("#cancelButton").show();
+
+    var data = {};
+    data['id'] = $('#vodid').val();
+    data['phrase'] = $('#phrase').val();
+    data['frequency'] = $('#frequency').val();
+    data['sample'] = 100;
+
+    post = $.ajax({
+    type: "POST",
+    url: "http://127.0.0.1:8080/",
+    data: data,
+    success: function(data){
+        $("#cancelButton").hide();
+        $("#searchButton").show();
+    	if (data == "vod not found"){
+    		$("#error-message").text("VOD not found. Please try again.");
+    		$("#error-message").show();
+
+    		$("#searchButton").show();
+            $("#cancelButton").hide();
+    		}
+    	else {
+    	$("#return-title").show();
+        data.forEach(function(time){
+            time = Number(time);
+            var h = Math.floor(time / 3600);
+            var m = Math.floor(time % 3600 / 60);
+            var s = Math.floor(time % 3600 % 60);
+            var hms = h + "h-" + m + "m-" + s + "s";
+
+            if (s-20 < 0){
+            	m = m - 1;
+            	s = s + 40;
+            	}
+            else {
+            	s = s - 20;
+            	}
+
+            var temp = document.createElement('div');
+            temp.setAttribute("class", "returnData");
+            temp.setAttribute("id", hms);
+            $('#return-container').append(temp);
+            var id = $('#vodid').val();
+            $("#" + hms).append('<a href="' + "https://www.twitch.tv/videos/" + id + "?t=" + h + "h" + m + "m" + s + 's"' + ' target="_blank"' + ">" + hms + '</a>');
+        });
+        console.log(data);
+        }
+        }
+        });
+        }
+        });
+        });
