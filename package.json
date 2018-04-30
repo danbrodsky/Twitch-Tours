@@ -1,21 +1,19 @@
 {
   "name": "tot",
-  "version": "1.0.0",
-  "description": "app to find quality Twitch clips.",
-  "main": "index.js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www"
   },
-  "author": "Daniel Brodsky",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.15.4",
-    "require": "2.2.0",
-    "jQuery": "3.2.1",
-    "Bootstrap" : "3.1.0",
-    "moment" : "2.18.1",
-    "overrustle-logs" : "2.0.2",
-    "https" : "1.0.0",
-    "child_process" : "1.0.2"
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
+    "debug": "~3.0.1",
+    "express": "~4.15.2",
+    "morgan": "~1.8.1",
+    "overrustle-logs": "^2.0.2",
+    "pug": "~2.0.0-beta11",
+    "serve-favicon": "~2.4.2"
   }
 }
