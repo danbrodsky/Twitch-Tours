@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
+const favicon = require('express-favicon');
+var serveStatic = require('serve-static');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -21,6 +22,9 @@ app.use(express.static(path.join(__dirname, '../')));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+app.use(serveStatic(__dirname + "/dist"));
+app.use(favicon(__dirname + '/public/favicon.png'));
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
